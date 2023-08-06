@@ -7,12 +7,14 @@ import { AuthBaseService } from './auth-base.service'
 import { ValidationOptions } from './types/validation-options'
 import { CredentialsValidator } from './credentials-validator'
 import { AuthBaseAccount } from './types/auth-base-account'
+import { ExtendedCredentialsValidator } from './types/extended-credentials-validator'
 
 export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     accountsService : AccountsServiceImplementation<TAccount>,
     jwtSecretKey : string,
     passwordSalt? : number,
     credentialsValidation? : ValidationOptions,
+    customCredentialsValidator? : ExtendedCredentialsValidator
 
     imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[]
 }
@@ -34,7 +36,9 @@ export class AuthBaseModule {
 
                 {
                     provide: CREDENTIALS_VALIDATOR_KEY,
-                    useValue: new CredentialsValidator(options.credentialsValidation)
+                    useValue: options.customCredentialsValidator 
+                        ? new options.customCredentialsValidator(options.credentialsValidation)
+                        : new CredentialsValidator(options.credentialsValidation)
                 },
 
                 {
