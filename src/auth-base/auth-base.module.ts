@@ -1,4 +1,4 @@
-import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common'
+import { DynamicModule, ForwardReference, Module, Provider, Type } from '@nestjs/common'
 import { AccountsServiceImplementation, AuthBaseAccountsService } from './types/auth-base-accounts-service'
 import { AuthBaseController } from './auth-base.controller'
 import { AUTH_BASE_OPTIONS_KEY, CREDENTIALS_VALIDATOR_KEY, ACCOUNTS_SERVICE_KEY } from './constants'
@@ -16,7 +16,8 @@ export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     credentialsValidation? : ValidationOptions,
     customCredentialsValidator? : ExtendedCredentialsValidator
 
-    imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[]
+    imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[],
+    providers? : Provider[]
 }
 
 @Module({})
@@ -47,6 +48,8 @@ export class AuthBaseModule {
                 },
                 
                 AuthBaseService<TAccount>,
+
+                ...options.providers || []
             ],
             
             imports: [
