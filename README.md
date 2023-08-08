@@ -2,4 +2,14 @@
 
 # Nest auth base
 
-README is in progress
+Customizable module for JWT username-password authentication & authorization. Create one service, put some guards and it's done
+
+## Installation
+
+```bash
+$ npm i nest-auth-base
+```
+
+## Usage
+
+...
