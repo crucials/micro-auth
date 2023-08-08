@@ -15,14 +15,14 @@ export class AuthBaseController<TAccount extends AuthBaseAccount> {
         private readonly credentialsValidator : CredentialsValidator) {}
 
     @Post('log-in')
-    logIn(@Body() credentials : Credentials) {
-        return this.authBaseService.logIn(credentials)
+    async logIn(@Body() credentials : Credentials) {
+        return await this.authBaseService.logIn(credentials)
     }
 
     @Post('sign-up')
-    signUp(@Body() credentials : Credentials) {
+    async signUp(@Body() credentials : Credentials) {
         this.credentialsValidator.validateCredentials(credentials)
         
-        return this.authBaseService.signUp(credentials)
+        return await this.authBaseService.signUp(credentials)
     }
 }

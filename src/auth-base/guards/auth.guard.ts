@@ -13,11 +13,11 @@ export class AuthGuard<TAccount extends AuthBaseAccount> implements CanActivate 
         @Inject(ACCOUNTS_SERVICE_KEY)
         private readonly accountsService : AuthBaseAccountsService<TAccount>) {}
 
-    canActivate(context: ExecutionContext) {
+    async canActivate(context: ExecutionContext) {
         const request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()
 
         const accountInfo = authenticate(request, this.jwtService)
-        request.account = this.accountsService.getAccountByUsername(accountInfo.username)
+        request.account = await this.accountsService.getAccountByUsername(accountInfo.username)
         return true
     }
 }

@@ -16,13 +16,13 @@ export class RolesGuard<TAccount extends AuthBaseAccount & { roles : string[] }>
         private readonly accountsService : AuthBaseAccountsService<TAccount>,
         private readonly reflector : Reflector) {}
 
-        canActivate(context : ExecutionContext) {
+        async canActivate(context : ExecutionContext) {
             const request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()   
 
             const accountInfo = authenticate(request, this.jwtService)
             console.log(accountInfo)
             
-            const account = this.accountsService.getAccountByUsername(accountInfo.username)
+            const account = await this.accountsService.getAccountByUsername(accountInfo.username)
             
             request.account = account
 

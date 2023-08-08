@@ -15,10 +15,10 @@ export class AuthBaseService<TAccount extends AuthBaseAccount> {
         @Inject(ACCOUNTS_SERVICE_KEY)
         private readonly accountsService : AuthBaseAccountsService<TAccount>) {}
 
-    logIn(credentials : Credentials) {
+    async logIn(credentials : Credentials) {
         const { username, password } = credentials
 
-        const targetAccount = this.accountsService.getAccountByUsername(username)
+        const targetAccount = await this.accountsService.getAccountByUsername(username)
 
         if(targetAccount && bcrypt.compareSync(password, targetAccount.password)) {
             return this.generateToken(targetAccount)
@@ -28,16 +28,16 @@ export class AuthBaseService<TAccount extends AuthBaseAccount> {
         }
     }
 
-    signUp(credentials : Credentials) {
+    async signUp(credentials : Credentials) {
         const { username, password } = credentials
 
-        const foundAccount = this.accountsService.getAccountByUsername(username)
+        const foundAccount = await this.accountsService.getAccountByUsername(username)
 
         if(foundAccount) {
             throw new BadRequestException(`Account with username '${username}' already exists`)
         }
 
-        const newAccount = this.accountsService.createAccount({
+        const newAccount = await this.accountsService.createAccount({
             username,
             hashedPassword: bcrypt.hashSync(password, this.options.passwordSalt || 8)
         })
