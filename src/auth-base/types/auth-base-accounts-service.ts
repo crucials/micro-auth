@@ -11,6 +11,5 @@ export type AccountsServiceImplementation<TAccount extends AuthBaseAccount>
 
 export abstract class AuthBaseAccountsService<TAccount extends AuthBaseAccount> {
     abstract createAccount(credentials : ProcessedCredentials) : TAccount | Promise<TAccount>
-    abstract generateJwtPayload(account : TAccount) : any
     abstract getAccountByUsername(username : string) : TAccount | Promise<TAccount> | undefined
 }

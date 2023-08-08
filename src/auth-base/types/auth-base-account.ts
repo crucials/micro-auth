@@ -1,1 +1,1 @@
-export type AuthBaseAccount = { password : string }
+export type AuthBaseAccount = { password : string, username : string }

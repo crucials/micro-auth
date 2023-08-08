@@ -46,8 +46,8 @@ export class AuthBaseService<TAccount extends AuthBaseAccount> {
     }
 
     private generateToken(account : TAccount) {
-        const payload = this.accountsService.generateJwtPayload(account)
-    
-        return this.jwtService.sign(payload)
+        return this.jwtService.sign({
+            username: account.username
+        })
     }
 }
