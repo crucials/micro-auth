@@ -1,6 +1,6 @@
 {
   "name": "nest-auth-base",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "🔑 No-boilerplate JWT auth module for your next Nest.js project",
   "keywords": [
     "jwt",
