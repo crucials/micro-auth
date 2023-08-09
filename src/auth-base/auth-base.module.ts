@@ -28,6 +28,7 @@ export class AuthBaseModule {
 
         return {
             module: AuthBaseModule,
+            global: true,
             controllers: [ AuthBaseController<TAccount> ],
             providers: [
                 {
