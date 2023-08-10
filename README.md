@@ -10,7 +10,7 @@ Customizable module for JWT username-password authentication & authorization. Cr
 $ npm i nest-auth-base
 ```
 
-## Simple usage
+## Working simple usage
 
 - Create your account interface, unique username and password are always required. If you want to use roles guard, you must add the `roles` property
 
