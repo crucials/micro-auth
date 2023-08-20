@@ -3,7 +3,7 @@ import { AuthBaseModuleOptions } from './auth-base.module'
 import { AUTH_BASE_OPTIONS_KEY, CREDENTIALS_VALIDATOR_KEY } from './constants'
 import { AuthBaseService } from './auth-base.service'
 import { Credentials } from './dto/credentials'
-import { CredentialsValidator } from './credentials-validator'
+import { CredentialsValidatorService } from './credentials-validator'
 import { AuthBaseAccount } from './types/auth-base-account'
 
 @Controller('auth')
@@ -12,7 +12,7 @@ export class AuthBaseController<TAccount extends AuthBaseAccount> {
         private readonly options : AuthBaseModuleOptions<TAccount>,
         private readonly authBaseService : AuthBaseService<TAccount>,
         @Inject(CREDENTIALS_VALIDATOR_KEY)
-        private readonly credentialsValidator : CredentialsValidator) {}
+        private readonly credentialsValidator : CredentialsValidatorService<TAccount>) {}
 
     @Post('log-in')
     async logIn(@Body() credentials : Credentials) {

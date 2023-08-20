@@ -5,16 +5,16 @@ import { AUTH_BASE_OPTIONS_KEY, CREDENTIALS_VALIDATOR_KEY, ACCOUNTS_SERVICE_KEY 
 import { JwtModule } from '@nestjs/jwt'
 import { AuthBaseService } from './auth-base.service'
 import { ValidationOptions } from './types/validation-options'
-import { CredentialsValidator } from './credentials-validator'
+import { CredentialsValidatorService } from './credentials-validator'
 import { AuthBaseAccount } from './types/auth-base-account'
-import { ExtendedCredentialsValidator } from './types/extended-credentials-validator'
+import { ExtendedCredentialsValidatorService } from './types/extended-credentials-validator'
 
 export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     accountsService : AccountsServiceImplementation<TAccount>,
     jwtSecretKey : string,
     passwordSalt? : number,
     credentialsValidation? : ValidationOptions,
-    customCredentialsValidator? : ExtendedCredentialsValidator
+    customCredentialsValidator? : ExtendedCredentialsValidatorService<TAccount>
 
     imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[],
     providers? : Provider[]
@@ -38,9 +38,7 @@ export class AuthBaseModule {
 
                 {
                     provide: CREDENTIALS_VALIDATOR_KEY,
-                    useValue: options.customCredentialsValidator 
-                        ? new options.customCredentialsValidator(options.credentialsValidation)
-                        : new CredentialsValidator(options.credentialsValidation)
+                    useClass: options.customCredentialsValidator || CredentialsValidatorService 
                 },
 
                 {

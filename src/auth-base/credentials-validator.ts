@@ -1,7 +1,10 @@
-import { EMAIL_REGEX, NO_SPACES_REGEX, NO_SPECIAL_CHARS_REGEX } from './constants'
+import { Inject, Injectable } from '@nestjs/common'
+import { AUTH_BASE_OPTIONS_KEY, EMAIL_REGEX, NO_SPACES_REGEX, NO_SPECIAL_CHARS_REGEX } from './constants'
 import { Credentials } from './dto/credentials'
 import { CredentialsValidationException } from './exceptions/credentials-validation-exception'
 import { BaseValidationOptions, UsernameValidationOptions, ValidationOptions } from './types/validation-options'
+import { AuthBaseModuleOptions } from './auth-base.module'
+import { AuthBaseAccount } from './types/auth-base-account'
 
 const DEFAULT_VALIDATION_OPTIONS : ValidationOptions = {
     username: {
@@ -21,8 +24,12 @@ const DEFAULT_VALIDATION_OPTIONS : ValidationOptions = {
 
 export type CredentialName = 'Username' | 'Password'
 
-export class CredentialsValidator {
-    constructor(private validationOptions : ValidationOptions) {
+@Injectable()
+export class CredentialsValidatorService<TAccount extends AuthBaseAccount> {
+    validationOptions : ValidationOptions
+
+    constructor(@Inject(AUTH_BASE_OPTIONS_KEY) options : AuthBaseModuleOptions<TAccount>) {
+        this.validationOptions = options.credentialsValidation
         this.fillMissingOptions()
     }
 
