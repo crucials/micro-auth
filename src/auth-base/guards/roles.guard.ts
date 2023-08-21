@@ -20,7 +20,6 @@ export class RolesGuard<TAccount extends AuthBaseAccount & { roles : string[] }>
             const request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()   
 
             const accountInfo = authenticate(request, this.jwtService)
-            console.log(accountInfo)
             
             const account = await this.accountsService.getAccountByUsername(accountInfo.username)
             
