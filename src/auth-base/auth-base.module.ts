@@ -14,7 +14,8 @@ export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     jwtSecretKey : string,
     passwordSalt? : number,
     credentialsValidation? : ValidationOptions,
-    customCredentialsValidator? : ExtendedCredentialsValidatorService<TAccount>
+    customCredentialsValidator? : ExtendedCredentialsValidatorService<TAccount>,
+    customController? : Type<AuthBaseController<TAccount>>
 
     imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[],
     providers? : Provider[]
@@ -29,7 +30,7 @@ export class AuthBaseModule {
         return {
             module: AuthBaseModule,
             global: true,
-            controllers: [ AuthBaseController<TAccount> ],
+            controllers: [ options.customController || AuthBaseController<TAccount>  ],
             providers: [
                 {
                     provide: AUTH_BASE_OPTIONS_KEY,
