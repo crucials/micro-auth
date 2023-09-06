@@ -6,6 +6,7 @@ import { AuthBaseAccount } from '../types/auth-base-account'
 import { AuthBaseAccountsService } from '../types/auth-base-accounts-service'
 import { SecuredEndpointRequest } from '../types/secured-endpoint-request'
 import { authenticate } from '../utils/authenticate'
+import { GqlExecutionContext } from '@nestjs/graphql'
 
 @Injectable()
 export class AuthGuard<TAccount extends AuthBaseAccount> implements CanActivate {
@@ -14,7 +15,11 @@ export class AuthGuard<TAccount extends AuthBaseAccount> implements CanActivate 
         private readonly accountsService : AuthBaseAccountsService<TAccount>) {}
 
     async canActivate(context: ExecutionContext) {
-        const request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()
+        let request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()
+
+        if(!request) {
+            request = GqlExecutionContext.create(context).getContext().req
+        }
 
         const accountInfo = authenticate(request, this.jwtService)
         request.account = await this.accountsService.getAccountByUsername(accountInfo.username)
