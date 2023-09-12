@@ -4,4 +4,4 @@ import { AuthBaseAccount } from './auth-base-account'
 import { ValidationOptions } from './validation-options'
 
 export type ExtendedCredentialsValidatorService<TAccount extends AuthBaseAccount> = 
-    new (options? : AuthBaseModuleOptions<TAccount>) => CredentialsValidatorService<TAccount>
+    new (options : AuthBaseModuleOptions<TAccount>) => CredentialsValidatorService<TAccount>
