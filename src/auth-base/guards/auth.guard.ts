@@ -31,7 +31,7 @@ export class AuthGuard<TAccount extends AuthBaseAccount> implements CanActivate 
         const accountInfo = authenticate(request, this.jwtService, tokenRequired)
         
         if(accountInfo) { 
-            request.account = await this.accountsService.getAccountByUsername(accountInfo.username)
+            request.account = await this.accountsService.getAccountByUsername(accountInfo.username) || undefined
         }
 
         return true

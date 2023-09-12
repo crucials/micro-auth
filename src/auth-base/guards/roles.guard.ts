@@ -27,7 +27,7 @@ export class RolesGuard<TAccount extends AuthBaseAccount & { roles : string[] }>
 
             const account = await this.accountsService.getAccountByUsername(accountInfo.username)
             
-            request.account = account
+            request.account = account || undefined
 
             const allowedRoles = this.reflector.getAllAndOverride<string[]>('allowed-roles', [
                 context.getClass(), context.getHandler()
