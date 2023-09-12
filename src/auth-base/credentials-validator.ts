@@ -33,7 +33,7 @@ type FilledValidationOptions = {
 
 @Injectable()
 export class CredentialsValidatorService<TAccount extends AuthBaseAccount> {
-    validationOptions : ValidationOptions
+    private validationOptions : ValidationOptions
 
     constructor(@Inject(AUTH_BASE_OPTIONS_KEY) options : AuthBaseModuleOptions<TAccount>) {
         if(options.credentialsValidation) {
