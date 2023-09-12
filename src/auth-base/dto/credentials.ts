@@ -1,4 +1,4 @@
-export class Credentials {
-    readonly username : string
-    readonly password : string
+export interface Credentials {
+    username : string
+    password : string
 }

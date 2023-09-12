@@ -6,7 +6,7 @@ import { BaseValidationOptions, UsernameValidationOptions, ValidationOptions } f
 import { AuthBaseModuleOptions } from './auth-base.module'
 import { AuthBaseAccount } from './types/auth-base-account'
 
-const DEFAULT_VALIDATION_OPTIONS : ValidationOptions = {
+const DEFAULT_VALIDATION_OPTIONS : FilledValidationOptions = {
     username: {
         email: false,
         allowSpecialCharacters: false,
@@ -24,22 +24,36 @@ const DEFAULT_VALIDATION_OPTIONS : ValidationOptions = {
 
 export type CredentialName = 'Username' | 'Password'
 
+type FilledUsernameValidationOptions = Required<UsernameValidationOptions>
+type FilledBaseValidationOptions = Required<BaseValidationOptions>
+type FilledValidationOptions = {
+    username : FilledUsernameValidationOptions,
+    password : FilledBaseValidationOptions
+}
+
 @Injectable()
 export class CredentialsValidatorService<TAccount extends AuthBaseAccount> {
     validationOptions : ValidationOptions
 
     constructor(@Inject(AUTH_BASE_OPTIONS_KEY) options : AuthBaseModuleOptions<TAccount>) {
-        this.validationOptions = options.credentialsValidation
-        this.fillMissingOptions()
+        if(options.credentialsValidation) {
+            this.validationOptions = options.credentialsValidation
+            this.fillMissingOptions()
+        }
+        else {
+            this.validationOptions = DEFAULT_VALIDATION_OPTIONS
+        }
     }
 
     validateCredentials(credentials : Credentials) {
-        this.validateCredential(credentials.username, 'Username', this.validationOptions.username)
-        this.validateCredential(credentials.password, 'Password', this.validationOptions.password)
+        this.validateCredential(credentials.username, 'Username', 
+            this.validationOptions.username as FilledUsernameValidationOptions)
+        this.validateCredential(credentials.password, 'Password', 
+            this.validationOptions.password as FilledBaseValidationOptions)
     }
 
-    private validateCredential(credential : string, credentialName : CredentialName, 
-        options : BaseValidationOptions | UsernameValidationOptions) {
+    private validateCredential(credential : string | undefined, credentialName : CredentialName, 
+        options : FilledBaseValidationOptions | FilledUsernameValidationOptions) {
 
         if(typeof credential !== 'string') {
             throw new CredentialsValidationException('Username must be a string')
@@ -73,20 +87,36 @@ export class CredentialsValidatorService<TAccount extends AuthBaseAccount> {
         const defaultUsernameOptions = DEFAULT_VALIDATION_OPTIONS.username
         const defaultPasswordOptions = DEFAULT_VALIDATION_OPTIONS.password
 
-        let completeUsernameValidationOptions = defaultUsernameOptions
-        let completePasswordValidationOptions = defaultPasswordOptions
+        /*
+            dont wanna do type gymnastics so just set an explicit any type
+            if you remove it, some error related to "never" type will happen
+        */
+        let completeUsernameValidationOptions : any = defaultUsernameOptions
+        let completePasswordValidationOptions : any = defaultPasswordOptions
 
         if(this.validationOptions) {
-            Object.keys(this.validationOptions.username || {}).forEach(optionKey => {
-                const optionValue = this.validationOptions.username[optionKey]
+            const checkedValidationOptions : Required<ValidationOptions> = {
+                username: this.validationOptions.username || {},
+                password: this.validationOptions.password || {}
+            }
+
+            Object.keys(checkedValidationOptions.username).forEach(optionKey => {
+                const optionValue = checkedValidationOptions.username[
+                    optionKey as keyof UsernameValidationOptions
+                ]
                 
                 if(optionValue !== undefined) {
-                    completeUsernameValidationOptions[optionKey] = optionValue
+                    completeUsernameValidationOptions[
+                        optionKey as keyof FilledUsernameValidationOptions
+                    ] = optionValue
                 }
             })
 
-            Object.keys(this.validationOptions.password || {}).forEach(optionKey => {
-                const optionValue = this.validationOptions.password[optionKey]
+            Object.keys(checkedValidationOptions.password).forEach(optionKey => {
+                const optionValue = checkedValidationOptions.password[
+                    optionKey as keyof BaseValidationOptions
+                ]
+
                 if(optionValue) {
                     completePasswordValidationOptions[optionKey] = optionValue
                 }

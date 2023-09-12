@@ -18,6 +18,11 @@ export class AuthBaseService<TAccount extends AuthBaseAccount> {
     async logIn(credentials : Credentials) {
         const { username, password } = credentials
 
+        if(!username || !password) {
+            throw new BadRequestException('Your request body must include \'username\''
+                + 'and \'password\' fields')
+        }
+
         const targetAccount = await this.accountsService.getAccountByUsername(username)
 
         if(targetAccount && bcrypt.compareSync(password, targetAccount.password)) {
@@ -28,7 +33,7 @@ export class AuthBaseService<TAccount extends AuthBaseAccount> {
         }
     }
 
-    async signUp(credentials : Credentials) {
+    async signUp(credentials : Required<Credentials>) {
         const { username, password } = credentials
 
         const foundAccount = await this.accountsService.getAccountByUsername(username)
