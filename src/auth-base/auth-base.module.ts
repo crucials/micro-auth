@@ -8,6 +8,7 @@ import { ValidationOptions } from './types/validation-options'
 import { CredentialsValidatorService } from './credentials-validator'
 import { AuthBaseAccount } from './types/auth-base-account'
 import { ExtendedCredentialsValidatorService } from './types/extended-credentials-validator'
+import { CanBePromise } from './types/can-be-promise'
 
 export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     accountsService : AccountsServiceImplementation<TAccount>,
@@ -17,7 +18,7 @@ export interface AuthBaseModuleOptions<TAccount extends AuthBaseAccount> {
     customCredentialsValidator? : ExtendedCredentialsValidatorService<TAccount>,
     customController? : Type<AuthBaseController<TAccount>>
 
-    imports? : (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[],
+    imports? : (CanBePromise<DynamicModule> | Type<any> | ForwardReference<any>)[],
     providers? : Provider[]
 }
 
