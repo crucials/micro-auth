@@ -4,6 +4,7 @@ import { AuthBaseService } from './auth-base/auth-base.service'
 import { CredentialName, CredentialsValidatorService } from './auth-base/credentials-validator'
 import { AllowedRoles } from './auth-base/decorators/allowed-roles'
 import { CurrentAccount } from './auth-base/decorators/current-account'
+import { OptionalAuth } from './auth-base/decorators/optional-auth'
 import { Credentials } from './auth-base/dto/credentials'
 import { AuthBaseException } from './auth-base/exceptions/auth-base-exception'
 import { CredentialsValidationException } from './auth-base/exceptions/credentials-validation-exception'
@@ -41,6 +42,7 @@ export {
 
     AllowedRoles,
     CurrentAccount,
+    OptionalAuth,
 
     AuthBaseException,
     CredentialsValidationException,

@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable } from '@nestjs/common'
+import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { JwtService } from '@nestjs/jwt'
 import { AuthBaseAccount } from '../types/auth-base-account'
@@ -20,7 +20,11 @@ export class RolesGuard<TAccount extends AuthBaseAccount & { roles : string[] }>
             const request = context.switchToHttp().getRequest<SecuredEndpointRequest<TAccount>>()   
 
             const accountInfo = authenticate(request, this.jwtService)
-            
+
+            if(!accountInfo) {
+                throw new UnauthorizedException('Authentication failed, couldn\'t get your account info')
+            }
+
             const account = await this.accountsService.getAccountByUsername(accountInfo.username)
             
             request.account = account
