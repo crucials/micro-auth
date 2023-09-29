@@ -133,4 +133,5 @@ That's all. Now you have secured API
 
 ## Learn more
 
-Docs soon
+Prisma integration, account creating credentials constraints, customization and more can be read in the [**documentation**](https://auth-base.vercel.app) :book:
+
